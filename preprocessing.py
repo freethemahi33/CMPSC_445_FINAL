@@ -1,6 +1,10 @@
 import pandas as pd
 import numpy as np
 from IPython.core.display_functions import display
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.ensemble import GradientBoostingRegressor  # or GradientBoostingClassifier, based on your problem
+
 
 np.set_printoptions(precision=3)
 np.set_printoptions(threshold=3)
@@ -58,6 +62,7 @@ pd.set_option('display.float_format', lambda x: '%.5f' % x)
 
 # Create new dataframe with all dummy variables for all categories
 
+
 df2 = df[target]
 
 for a in list_of_categories:
@@ -68,6 +73,34 @@ for a in list_of_categories:
 
 print("df2 columns:\n", df2.columns)
 print("df2 describe:\n", df2.describe().T)
+
+df2.to_csv('dummyVars.csv', sep="\t")
+
+
+# another way using onehot encoder?
+
+X = df.drop('total_sales_price', axis=1)
+y = df['total_sales_price']
+
+categorical_columns = list_of_categories
+continuous_columns = list_of_continuous
+
+encoder = OneHotEncoder(handle_unknown='ignore', sparse=False)
+X_encoded = pd.DataFrame(encoder.fit_transform(X[categorical_columns]))
+
+# Set the column names for the encoded DataFrame
+X_encoded.columns = encoder.get_feature_names_out(categorical_columns)
+
+# Reset the index to match the original DataFrame
+X_encoded.reset_index(drop=True, inplace=True)
+X_continuous = X[continuous_columns].reset_index(drop=True)
+
+# Combine the continuous variables with the one-hot encoded categorical variables
+X_prepared = pd.concat([X_continuous, X_encoded], axis=1)
+
+print(X_prepared)
+
+X_prepared.to_csv('X_prepared.csv', sep='\t')
 
 
 
