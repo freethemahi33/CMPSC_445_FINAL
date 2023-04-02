@@ -18,9 +18,8 @@ col_tolist = cols.tolist()
 c = df.columns
 var_dist_cnts = {}
 for i in c:
-    uniq_cnt = df[i].nunique()  # Use df[i] instead of cols[c]
-    # print(i, uniq_cnt)
-    var_dist_cnts[i] = uniq_cnt  # Use i instead of c
+    uniq_cnt = df[i].nunique()
+    var_dist_cnts[i] = uniq_cnt
 
 
 # print("Printing distinct counts for variables : ", var_dist_cnts)
